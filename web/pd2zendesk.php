@@ -31,12 +31,15 @@ if ($messages) foreach ($messages->messages as $webhook) {
   echo "\$incident_id = ";
   var_dump($incident_id);
 */
-  $ticket_id = $webhook->log_entries[0]->id;
+
+  // ticket_id is the Zendesk ticket number
+  $ticket_id = $webhook->incident->incident_key;
+  $ticket_id = trim($ticket_id,'#')
 /*
   echo "\$ticket_id = ";
   var_dump($ticket_id);
 */
-  $ticket_url = $webhook->log_entries[0]->html_url;
+  $ticket_url = $webhook->incident->html_url;
 /*
   echo "\$ticket_url = ";
   var_dump($ticket_url);
@@ -62,8 +65,8 @@ if ($messages) foreach ($messages->messages as $webhook) {
       */
       $action_message = " and is assigned to " . $pd_requester_id;
       //Remove the pd_integration tag in Zendesk to eliminate further updates
-      // $url = "https://$zd_subdomain.zendesk.com/api/v2/tickets/$ticket_id/tags.json";
-      $url = "http://httpresponder.com/sakjmdf9ef93";
+      $url = "https://$zd_subdomain.zendesk.com/api/v2/tickets/$ticket_id/tags.json";
+      // $url = "http://httpresponder.com/sakjmdf9ef93";
       $data = array('tags'=>array('pd_integration'));
       $data_json = json_encode($data);
       $status_code = http_request($url, $data_json, "DELETE", "basic", $zd_username, $zd_api_token);
