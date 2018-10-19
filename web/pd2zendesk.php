@@ -8,6 +8,7 @@ $pd_from_email = getenv('PAGERDUTY_USER_EMAIL');
 if ($messages) foreach ($messages->messages as $webhook) {
   $webhook_type = $webhook->type;
   $incident_id = $webhook->data->incident->id;
+  $incident_number = $webhook->data->incident->incident_number;
   $ticket_id = $webhook->data->incident->trigger_summary_data->extracted_fields->ticket_id;
   $ticket_url = $webhook->data->incident->html_url;
   $pd_requester_id = $webhook->data->incident->assigned_to_user->id;
@@ -23,12 +24,12 @@ if ($messages) foreach ($messages->messages as $webhook) {
       //Remove the pd_integration tag in Zendesk to eliminate further updates
       $url = "https://$zd_subdomain.zendesk.com/api/v2/tickets/$ticket_id/tags.json";
       $data = array('tags'=>array('pd_integration'));
-      $incident_tag = array('tags'=>array('pd_incident_' . $incident_id));
+      $incident_tag = array('tags'=>array('pd_incident_' . $incident_number));
 
       $data_json = json_encode($data);
       $incident_tag_json = json_encode($data);
       $status_code = http_request($url, $data_json, "DELETE", "basic", $zd_username, $zd_api_token);
-      http_request($url, $incident_tag_json, "PUT", "basic", $zd_username, $zd_api_token);
+      http_request($url, $incident_tag_json, "PUSH", "basic", $zd_username, $zd_api_token);
       break;
     case "incident.acknowledge":
       $verb = "acknowledged ";
@@ -48,7 +49,7 @@ if ($messages) foreach ($messages->messages as $webhook) {
   }
   //Update the Zendesk ticket when the incident is acknowledged or resolved.
   $url = "https://$zd_subdomain.zendesk.com/api/v2/tickets/$ticket_id.json";
-  $data = array('ticket'=>array('comment'=>array('public'=>'false','body'=>"This ticket has been $verb" . $action_message . " in PagerDuty, incident number" . $incident_id . ".  To view the incident, go to $ticket_url.")));
+  $data = array('ticket'=>array('comment'=>array('public'=>'false','body'=>"This ticket has been $verb" . $action_message . " in PagerDuty, incident number (" . $incident_number . ").  To view the incident, go to $ticket_url.")));
   $data_json = json_encode($data);
   $status_code = http_request($url, $data_json, "PUT", "basic", $zd_username, $zd_api_token);
   if ($status_code != "200" && $verb != "resolved") {
