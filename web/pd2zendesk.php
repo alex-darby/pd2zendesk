@@ -24,12 +24,11 @@ if ($messages) foreach ($messages->messages as $webhook) {
       //Remove the pd_integration tag in Zendesk to eliminate further updates
       $url = "https://$zd_subdomain.zendesk.com/api/v2/tickets/$ticket_id/tags.json";
       $data = array('tags'=>array('pd_integration'));
-      $incident_tag = array('tags'=>array('pd_incident_' . $incident_number));
-
+      $incident_tag = array('tags'=>array('pd_' . $incident_number));
       $data_json = json_encode($data);
       $incident_tag_json = json_encode($data);
       $status_code = http_request($url, $data_json, "DELETE", "basic", $zd_username, $zd_api_token);
-      http_request($url, $incident_tag_json, "PUSH", "basic", $zd_username, $zd_api_token);
+      http_request($url, $incident_tag_json, "POST", "basic", $zd_username, $zd_api_token);
       break;
     case "incident.acknowledge":
       $verb = "acknowledged ";
