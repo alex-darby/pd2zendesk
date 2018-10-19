@@ -34,7 +34,7 @@ if ($messages) foreach ($messages->messages as $webhook) {
 
   // ticket_id is the Zendesk ticket number
   $ticket_id = $webhook->incident->incident_key;
-  $ticket_id = trim($ticket_id,'#')
+  $ticket_id = trim($ticket_id,'#');
 /*
   echo "\$ticket_id = ";
   var_dump($ticket_id);
