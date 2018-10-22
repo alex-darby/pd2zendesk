@@ -28,7 +28,8 @@ if ($messages) foreach ($messages->messages as $webhook) {
       $data_json = json_encode($data);
       $incident_tag_json = json_encode($data);
       $status_code = http_request($url, $data_json, "DELETE", "basic", $zd_username, $zd_api_token);
-      http_request($url, $incident_tag_json, "POST", "basic", $zd_username, $zd_api_token);
+      // Call intended to add a tag of the PD incident number in Zendesk, not currently working
+      // http_request($url, $incident_tag_json, "POST", "basic", $zd_username, $zd_api_token);
       break;
     case "incident.acknowledge":
       $verb = "acknowledged ";
