@@ -3,6 +3,7 @@
   TODO::
     -impliment the annotate case.
     -tag the ZD incident with a tag of the PD incident numbner, e.g. "pd_465"
+    -add the PD incident number to the comment text.
 
 
 */
@@ -72,6 +73,7 @@ if ($messages) foreach ($messages->messages as $webhook) {
       $data_json = json_encode($data);
       $status_code = http_request($url, $data_json, "DELETE", "basic", $zd_username, $zd_api_token);
       break;
+      
     case "incident.acknowledge":
       $verb = "acknowledged ";
 
@@ -88,18 +90,20 @@ if ($messages) foreach ($messages->messages as $webhook) {
       $acknowledger = $webhook->incident->acknowledgements[0]->acknowledger->summary;
       $action_message = " by " . $acknowledger;
       break;
-    /*  
+    
     case "incident.annotate":
       $verb = "annotated ";
 
       $acknowledger = $webhook->incident->acknowledgements[0]->acknowledger->summary;
-      $action_message = " by " . $acknowledger;
+      $annotation = $webhook->log_entries[0]->channel->summary;
+      $action_message = " by " . $acknowledger . " :\n\n " . $annotation . "\n\n";
       break;
-    */
+    
     case "incident.resolve":
       $verb = "resolved";
       $action_message = " by " . $pd_requester_id;
       break;
+
     default:
       continue 2;
   }
