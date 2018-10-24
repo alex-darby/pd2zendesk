@@ -2,6 +2,7 @@
 /*
   TODO::
     -impliment the annotate case.
+    -tag the ZD incident with a tag of the PD incident numbner, e.g. "pd_465"
 
 
 */
@@ -141,6 +142,10 @@ function http_request($url, $data_json, $method, $auth_type, $username, $token) 
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   $response  = curl_exec($ch);
   $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+  $response_debug = curl_getinfo($ch);
+
+  var_dump($response_debug)
 
   curl_close($ch);
   return $status_code;
