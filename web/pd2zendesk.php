@@ -66,8 +66,8 @@ if ($messages) foreach ($messages->messages as $webhook) {
       */
       $action_message = " and is assigned to " . $pd_requester_id;
       //Remove the pd_integration tag in Zendesk to eliminate further updates
-      $url = "https://$zd_subdomain.zendesk.com/api/v2/tickets/$ticket_id/tags.json";
-      // $url = "http://httpresponder.com/sakjmdf9ef93";
+      // $url = "https://$zd_subdomain.zendesk.com/api/v2/tickets/$ticket_id/tags.json";
+      $url = "http://httpresponder.com/sakjmdf9ef93";
       $data = array('tags'=>array('pd_integration'));
       $data_json = json_encode($data);
       $status_code = http_request($url, $data_json, "DELETE", "basic", $zd_username, $zd_api_token);
@@ -104,8 +104,8 @@ if ($messages) foreach ($messages->messages as $webhook) {
       continue 2;
   }
   //Update the Zendesk ticket when the incident is acknowledged or resolved.
-  $url = "https://$zd_subdomain.zendesk.com/api/v2/tickets/$ticket_id.json";
-  //$url = "http://mockbin.org/bin/be3f6d18-6693-45c3-9b5e-a516abc9022e";
+  // $url = "https://$zd_subdomain.zendesk.com/api/v2/tickets/$ticket_id.json";
+  $url = "http://httpresponder.com/sakjmdf9ef93";
   $data = array('ticket'=>array('comment'=>array('public'=>'false','body'=>"This ticket has been $verb" . $action_message . " in PagerDuty.  To view the incident, go to $ticket_url.")));
   $data_json = json_encode($data);
   $status_code = http_request($url, $data_json, "PUT", "basic", $zd_username, $zd_api_token);
@@ -145,7 +145,7 @@ function http_request($url, $data_json, $method, $auth_type, $username, $token) 
 
   $response_debug = curl_getinfo($ch);
 
-  var_dump($response_debug)
+  var_dump($response_debug);
 
   curl_close($ch);
   return $status_code;
